@@ -41,7 +41,23 @@ def explore(record: dict, indent: int = 0) -> None:
 
 def extract_attributes(customers: list[dict]) -> list[dict]:
     """Return one flat dict per customer with the attributes listed in the task."""
-    raise NotImplementedError
+    return [
+        {
+            "customer_id": c["id"],
+            "name": c["name"],
+            "username": c["username"],
+            "email": c["email"],
+            "email_domain": c["email"].split(".")[-1],
+            "phone": c["phone"],
+            "city": c["address"]["city"],
+            "zipcode": c["address"]["zipcode"],
+            "latitude": float(c["address"]["geo"]["lat"]),
+            "longitude": float(c["address"]["geo"]["lng"]),
+            "company": c["company"]["name"],
+            "website": c["website"],
+        }
+        for c in customers
+    ]
 
 
 def unique_cities(customers: list[dict]) -> set[str]:
