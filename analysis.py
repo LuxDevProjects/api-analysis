@@ -62,12 +62,16 @@ def extract_attributes(customers: list[dict]) -> list[dict]:
 
 def unique_cities(customers: list[dict]) -> set[str]:
     """Return the set of distinct cities."""
-    raise NotImplementedError
+    return {c["address"]["city"] for c in customers}
 
 
 def city_counts(customers: list[dict]) -> dict[str, int]:
     """Count customers per city using a loop and/or a dict comprehension (no Counter, no pandas)."""
-    raise NotImplementedError
+    counts = {}
+    for c in customers:
+        city = c["address"]["city"]
+        counts[city] = counts.get(city, 0) + 1
+    return counts
 
 
 def email_domain_counts(customers: list[dict]) -> dict[str, int]:
