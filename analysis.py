@@ -14,7 +14,21 @@ API_URL = "https://jsonplaceholder.typicode.com/users"
 
 def get_customers(url: str = API_URL) -> list[dict]:
     """Fetch the customer list. Report failures clearly instead of crashing."""
-    raise NotImplementedError
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.Timeout:
+        print(f"Error: the request to {url} timed out.")
+    except requests.exceptions.ConnectionError:
+        print("Error: could not connect. Check your internet connection.")
+    except requests.exceptions.HTTPError as e:
+        print(f"Error: the server returned a bad status code ({e.response.status_code}).")
+    except requests.exceptions.RequestException as e:
+        print(f"Error: the request failed: {e}")
+    except ValueError:
+        print("Error: the response was not valid JSON.")
+    return []
 
 
 def explore(record: dict, indent: int = 0) -> None:
