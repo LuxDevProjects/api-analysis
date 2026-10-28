@@ -76,7 +76,8 @@ def city_counts(customers: list[dict]) -> dict[str, int]:
 
 def email_domain_counts(customers: list[dict]) -> dict[str, int]:
     """Count customers per email top-level domain (e.g. 'biz', 'tv')."""
-    raise NotImplementedError
+    domains = [c["email"].split(".")[-1] for c in customers]
+    return {d: domains.count(d) for d in set(domains)}
 
 
 def to_dataframe(rows: list[dict]) -> pd.DataFrame:
