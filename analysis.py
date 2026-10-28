@@ -85,9 +85,25 @@ def to_dataframe(rows: list[dict]) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def plot_distribution(counts: dict[str, int], path: Path) -> None:
+def plot_distribution(counts: dict[str, int], path: Path, 
+                      title: str = "Customer Distribution", xlabel: str = "Category",) -> None:
     """Save a labelled chart of the distribution to path."""
-    raise NotImplementedError
+    ordered = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    labels = [label for label, _ in ordered]
+    values = [value for _, value in ordered]
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.bar(labels, values)
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel("Number of customers")
+    ax.set_yticks(range(0, max(values) + 1))
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+    fig.tight_layout()
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
 
 
 if __name__ == "__main__":
