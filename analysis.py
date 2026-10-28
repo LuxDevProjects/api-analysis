@@ -81,7 +81,8 @@ def email_domain_counts(customers: list[dict]) -> dict[str, int]:
 
 
 def to_dataframe(rows: list[dict]) -> pd.DataFrame:
-    raise NotImplementedError
+    """Convert the flat customer rows into a DataFrame."""
+    return pd.DataFrame(rows)
 
 
 def plot_distribution(counts: dict[str, int], path: Path) -> None:
