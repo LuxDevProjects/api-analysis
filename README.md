@@ -1,4 +1,4 @@
-# api-analysis
+# Api Analysis
 
 Pulls a customer list from an API, looks at how the data is structured, and answers one question for Pesa Pulse's marketing team: where are our customers?
 
