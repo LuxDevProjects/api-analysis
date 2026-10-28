@@ -33,7 +33,10 @@ def get_customers(url: str = API_URL) -> list[dict]:
 
 def explore(record: dict, indent: int = 0) -> None:
     """Print every key in a (possibly nested) record with its type, indented by depth."""
-    raise NotImplementedError
+    for key, value in record.items():
+        print(f"{'  ' * indent}{key}: {type(value).__name__}")
+        if isinstance(value, dict):
+            explore(value, indent + 1)
 
 
 def extract_attributes(customers: list[dict]) -> list[dict]:
