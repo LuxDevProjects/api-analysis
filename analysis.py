@@ -107,5 +107,60 @@ def plot_distribution(counts: dict[str, int], path: Path,
 
 
 if __name__ == "__main__":
-    # TODO: run each step and print a short findings summary
-    pass
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
+
+    # Fetch
+    customers = get_customers()
+    if not customers:
+        raise SystemExit(1)
+
+    # Explore one record
+    print("Structure of one customer record:")
+    explore(customers[0])
+    print()
+
+    # Extract flat attributes
+    rows = extract_attributes(customers)
+
+    # Unique cities
+    cities = unique_cities(customers)
+    print(f"{len(cities)} unique cities for {len(customers)} customers")
+
+    # Counts with plain Python, sorted most to least common
+    by_city = city_counts(customers)
+    by_domain = email_domain_counts(customers)
+    sort_key = lambda item: (-item[1], item[0])
+    sorted_cities = sorted(by_city.items(), key=sort_key)
+    sorted_domains = dict(sorted(by_domain.items(), key=sort_key))
+    print("City counts:", dict(sorted_cities))
+    print("Email domain counts:", sorted_domains)
+    print()
+
+    # DataFrame and cross-check against the hand-written counts
+    df = to_dataframe(rows)
+    print("DataFrame shape:", df.shape)
+    print(df.dtypes)
+    print("City counts match pandas:", df["city"].value_counts().to_dict() == by_city)
+    print("Domain counts match pandas:", df["email_domain"].value_counts().to_dict() == by_domain)
+    print()
+
+    # Export CSVs
+    df.to_csv(output_dir / "customers.csv", index=False)
+    city_df = pd.DataFrame(sorted_cities, columns=["city", "customer_count"])
+    city_df.to_csv(output_dir / "city_counts.csv", index=False)
+
+    # Charts
+    city_chart = output_dir / "customer_distribution.png"
+    domain_chart = output_dir / "email_domain_distribution.png"
+    plot_distribution(by_city, city_chart, "Customers by City", "City")
+    plot_distribution(by_domain, domain_chart, "Customers by Email Domain", "Email domain (TLD)")
+
+    # Findings summary
+    top_city, top_count = sorted_cities[0]
+    print("Customers retrieved :", len(customers))
+    print("Unique cities       :", len(cities))
+    print(f"Most common city    : {top_city} ({top_count})")
+    print("Email domains       :", sorted_domains)
+    print("Chart saved to      :", city_chart.as_posix())
+    print("Second chart saved  :", domain_chart.as_posix())
